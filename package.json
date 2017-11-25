@@ -4,9 +4,10 @@
   "description": "Reactive React Extensions for JavaScript",
   "main": "lib/index.cjs.js",
   "scripts": {
-    "build": "cross-env BABEL_ENV=production rollup -c",
-    "dev": "cross-env BABEL_ENV=development rollup -c -w",
-    "test": "cross-env BABEL_ENV=test jest"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "cross-env": "^5.1.1",
+    "coveralls": "^3.0.0",
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-16": "^1.1.0",
     "eslint": "^4.11.0",
@@ -47,7 +48,8 @@
     "setupTestFrameworkScriptFile": "<rootDir>/setup/setupTests.js",
     "collectCoverage": true,
     "coverageReporters": [
-      "html"
+      "html",
+      "lcov"
     ],
     "coveragePathIgnorePatterns": [
       "/setup/",
