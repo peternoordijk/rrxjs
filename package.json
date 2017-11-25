@@ -8,6 +8,10 @@
     "dev": "cross-env BABEL_ENV=development rollup -c -w",
     "test": "cross-env BABEL_ENV=test jest"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peternoordijk/rrxjs"
+  },
   "author": "Peter Noordijk",
   "license": "MIT",
   "devDependencies": {
