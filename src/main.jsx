@@ -24,25 +24,35 @@ export default (WrappedComponent) => {
 
     componentWillUnmount() {
       Object.keys(this.subscriptions)
-        .forEach(prop => this.subscriptions[prop].unsubscribe());
+        .forEach(prop => this.subscriptions[prop].subscription.unsubscribe());
     }
 
     checkSubscriptions(nextProps) {
       // Subscribe to all new observables
       Object.keys(nextProps).forEach((prop) => {
-        if (!this.subscriptions[prop] && nextProps[prop] && nextProps[prop] instanceof Observable) {
+        const observable = nextProps[prop];
+        if (observable instanceof Observable) {
+          if (this.subscriptions[prop]) {
+            if (this.subscriptions[prop].observable === observable) {
+              return;
+            }
+            this.subscriptions[prop].subscription.unsubscribe();
+          }
           const label = prop[prop.length - 1] === '$' ? prop.substr(0, prop.length - 1) : prop;
           this.state[label] = null;
-          this.subscriptions[prop] =
-            nextProps[prop].subscribe(value => this.receiveValue(label, value));
+          this.subscriptions[prop] = {
+            observable,
+            label,
+            subscription: observable.subscribe(value => this.receiveValue(label, value)),
+          };
         }
       });
       // Remove old subscriptions
       Object.keys(this.subscriptions).forEach((prop) => {
         if (!nextProps[prop]) {
-          this.subscriptions[prop].unsubscribe();
+          this.subscriptions[prop].subscription.unsubscribe();
+          delete this.state[this.subscriptions[prop].label];
           delete this.subscriptions[prop];
-          delete this.state[prop.substr(0, prop.length - 1)];
         }
       });
     }

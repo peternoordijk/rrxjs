@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import { mount } from 'enzyme';
 import { Subject } from 'rxjs/Subject';
@@ -42,7 +43,7 @@ describe('rrxjs', () => {
     const Wrapped = rrxjs(({ subject }) => <span>{ subject || 'null' }</span>);
     const subject$ = new Subject();
     const wrapper = mount(<Wrapped subject$={subject$} />);
-    const spy = jest.spyOn(wrapper.instance().subscriptions.subject$, 'unsubscribe');
+    const spy = jest.spyOn(wrapper.instance().subscriptions.subject$.subscription, 'unsubscribe');
     wrapper.unmount();
     expect(subject$.observers.length).toBe(0);
     expect(spy).toHaveBeenCalled();
@@ -100,5 +101,40 @@ describe('rrxjs', () => {
     });
     expect(wrapper.text()).toBe('456');
     expect(observable$.observers.length).toBe(0);
+  });
+
+  it('can switch one observable to the other', () => {
+    const a$ = new BehaviorSubject('aaa');
+    const b$ = new BehaviorSubject('bbb');
+
+    const Wrapped = rrxjs(({ a, b }) =>
+      <span>{ a || b }</span>);
+
+    class Container extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          a$,
+        };
+      }
+
+      render() {
+        return (
+          <Wrapped a$={this.state.a$} />
+        );
+      }
+    }
+
+    const wrapper = mount(<Container />);
+    expect(wrapper.text()).toBe('aaa');
+    expect(a$.observers.length).toBe(1);
+    expect(b$.observers.length).toBe(0);
+
+    wrapper.instance().setState({
+      a$: b$,
+    });
+    expect(wrapper.text()).toBe('bbb');
+    expect(a$.observers.length).toBe(0);
+    expect(b$.observers.length).toBe(1);
   });
 });
