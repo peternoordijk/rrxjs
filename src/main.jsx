@@ -28,16 +28,22 @@ export default (WrappedComponent) => {
     }
 
     checkSubscriptions(nextProps) {
-      // Subscribe to all new observables
+      // Check for new observables
       Object.keys(nextProps).forEach((prop) => {
         const observable = nextProps[prop];
-        if (observable instanceof Observable) {
-          if (this.subscriptions[prop]) {
-            if (this.subscriptions[prop].observable === observable) {
-              return;
-            }
-            this.subscriptions[prop].subscription.unsubscribe();
+        // Remove the old subscription if a new observable is provided
+        if (this.subscriptions[prop]) {
+          if (this.subscriptions[prop].observable === observable) {
+            return;
           }
+          this.subscriptions[prop].subscription.unsubscribe();
+          // The old value must be deleted entirely, as the new value might
+          // also not be an observable
+          delete this.state[this.subscriptions[prop].label];
+          delete this.subscriptions[prop];
+        }
+        // Now subscribe to the new observable
+        if (observable instanceof Observable) {
           const label = prop[prop.length - 1] === '$' ? prop.substr(0, prop.length - 1) : prop;
           this.state[label] = null;
           this.subscriptions[prop] = {

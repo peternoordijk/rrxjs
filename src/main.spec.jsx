@@ -107,8 +107,8 @@ describe('rrxjs', () => {
     const a$ = new BehaviorSubject('aaa');
     const b$ = new BehaviorSubject('bbb');
 
-    const Wrapped = rrxjs(({ a, b }) =>
-      <span>{ a || b }</span>);
+    const Wrapped = rrxjs(({ a }) =>
+      <span>{ a }</span>);
 
     class Container extends React.Component {
       constructor(props) {
@@ -132,6 +132,81 @@ describe('rrxjs', () => {
 
     wrapper.instance().setState({
       a$: b$,
+    });
+    expect(wrapper.text()).toBe('bbb');
+    expect(a$.observers.length).toBe(0);
+    expect(b$.observers.length).toBe(1);
+  });
+
+  it('can switch a prop from observable to a normal value', () => {
+    const a$ = new BehaviorSubject('aaa');
+    const b = 'bbb';
+
+    const Wrapped = rrxjs(({ subject }) =>
+      <span>{ subject }</span>);
+
+    class Container extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          subject: a$,
+        };
+      }
+
+      render() {
+        return (
+          <Wrapped subject={this.state.subject} />
+        );
+      }
+    }
+
+    const wrapper = mount(<Container />);
+    expect(wrapper.text()).toBe('aaa');
+    expect(a$.observers.length).toBe(1);
+
+    wrapper.instance().setState({
+      subject: b,
+    });
+    expect(wrapper.text()).toBe('bbb');
+    expect(a$.observers.length).toBe(0);
+  });
+
+  it('removes subscriptions when the props have been dynamically set', () => {
+    const a$ = new BehaviorSubject('aaa');
+    const b$ = new BehaviorSubject('bbb');
+
+    const Wrapped = rrxjs(({ a, b }) =>
+      <span>{ a || b }</span>);
+
+    class Container extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          a$, b$,
+        };
+      }
+
+      render() {
+        const props = Object.keys(this.state).reduce((acc, key) => {
+          if (this.state[key]) {
+            acc[key] = this.state[key];
+          }
+          return acc;
+        }, {});
+
+        return (
+          <Wrapped {...props} />
+        );
+      }
+    }
+
+    const wrapper = mount(<Container />);
+    expect(wrapper.text()).toBe('aaa');
+    expect(a$.observers.length).toBe(1);
+    expect(b$.observers.length).toBe(1);
+
+    wrapper.instance().setState({
+      a$: null,
     });
     expect(wrapper.text()).toBe('bbb');
     expect(a$.observers.length).toBe(0);
