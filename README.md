@@ -33,8 +33,8 @@ let MyComponent = (props) => (
 // 2. Wrap it in the rrxjs function
 MyComponent = rrxjs(MyComponent);
 
-// 3. Provide an observable as prop from the parent component. You must use the
-// dollar sign in the prop name to indicate an observable
+// 3. Provide an observable as prop from the parent component. Note that the
+// dollar sign has been removed from the prop name of the child component
 
 const MyParentComponent = () => (
   <div>

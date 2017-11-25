@@ -1,4 +1,5 @@
 import React from 'react';
+import { Observable } from 'rxjs/Observable';
 
 const getDisplayName = WrappedComponent =>
   WrappedComponent.displayName ||
@@ -29,8 +30,8 @@ export default (WrappedComponent) => {
     checkSubscriptions(nextProps) {
       // Subscribe to all new observables
       Object.keys(nextProps).forEach((prop) => {
-        if (!this.subscriptions[prop] && nextProps[prop] && prop[prop.length - 1] === '$') {
-          const label = prop.substr(0, prop.length - 1);
+        if (!this.subscriptions[prop] && nextProps[prop] && nextProps[prop] instanceof Observable) {
+          const label = prop[prop.length - 1] === '$' ? prop.substr(0, prop.length - 1) : prop;
           this.state[label] = null;
           this.subscriptions[prop] =
             nextProps[prop].subscribe(value => this.receiveValue(label, value));

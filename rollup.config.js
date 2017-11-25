@@ -18,9 +18,10 @@ export default [
         objectAssign: 'Object.assign',
       }),
     ],
-    external: ['react'],
+    external: ['react', 'rxjs/Observable'],
     globals: {
       react: 'React',
+      'rxjs/Observable': 'Rx',
     },
   },
   {
@@ -38,9 +39,10 @@ export default [
         objectAssign: 'Object.assign',
       }),
     ],
-    external: ['react'],
+    external: ['react', 'rxjs/Observable'],
     globals: {
       react: 'React',
+      'rxjs/Observable': 'Rx',
     },
   },
   {

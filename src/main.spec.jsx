@@ -59,6 +59,13 @@ describe('rrxjs', () => {
     expect(wrapper.text()).toBe('17');
   });
 
+  it('accepts observables without the $ convention', () => {
+    const Wrapped = rrxjs(({ subject }) => <span>{ subject || 'null' }</span>);
+    const subject$ = new BehaviorSubject('Meh');
+    const wrapper = mount(<Wrapped subject={subject$} />);
+    expect(wrapper.text()).toBe('Meh');
+  });
+
   it('removes subscriptions when props change', () => {
     const Wrapped = rrxjs(({ a, b }) =>
       <span>{ a || b }</span>);
