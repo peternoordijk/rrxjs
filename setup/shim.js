@@ -1,0 +1,3 @@
+// React Fiber related issue...
+
+global.requestAnimationFrame = callback => setTimeout(callback, 0);
