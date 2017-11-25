@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/peternoordijk/rrxjs.svg?branch=master)](https://travis-ci.org/peternoordijk/rrxjs) [![Coverage Status](https://coveralls.io/repos/github/peternoordijk/rrxjs/badge.svg?branch=master)](https://coveralls.io/github/peternoordijk/rrxjs?branch=master)
 
-This library provides a simple wrapper to use RxJS in your React applications. It maps observables provided in the props to values. It manages all necessary subscriptions and for you.
+This library provides a simple wrapper to use RxJS in your React applications. It maps observables to their current values. It manages all necessary subscriptions automatically.
 
 ```sh
 $ npm install rrxjs
