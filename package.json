@@ -1,6 +1,6 @@
 {
   "name": "rrxjs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Reactive React Extensions for JavaScript",
   "main": "lib/index.cjs.js",
   "scripts": {
@@ -42,8 +42,8 @@
     "rxjs": "^5.5.2"
   },
   "peerDependencies": {
-    "react": "^16.1.1",
-    "rxjs": "^5.5.2"
+    "react": ">=15.0.0",
+    "rxjs": ">=5.0.0"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/setup/setupTests.js",

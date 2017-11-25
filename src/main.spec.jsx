@@ -35,14 +35,7 @@ describe('rrxjs', () => {
     const Wrapped = rrxjs(({ subject }) => <span>{ subject || 'null' }</span>);
     const subject$ = new BehaviorSubject('Meh');
     const wrapper = mount(<Wrapped subject$={subject$} />);
-    expect(Object.keys(wrapper.instance().subscriptions).length).toBe(1);
-    expect(Object.keys(wrapper.instance().subscriptions)[0]).toBe('subject$');
-    expect(wrapper.instance().state).toEqual({
-      subject: 'Meh',
-    });
-    // expect(wrapper.text()).toBe('Meh');
-    subject$.next('Hello');
-    expect(wrapper.text()).toBe('Hello');
+    expect(wrapper.text()).toBe('Meh');
   });
 
   it('unsubscribes when unmounting', () => {
@@ -51,6 +44,7 @@ describe('rrxjs', () => {
     const wrapper = mount(<Wrapped subject$={subject$} />);
     const spy = jest.spyOn(wrapper.instance().subscriptions.subject$, 'unsubscribe');
     wrapper.unmount();
+    expect(subject$.observers.length).toBe(0);
     expect(spy).toHaveBeenCalled();
   });
 
